@@ -36,9 +36,12 @@ class App:
             self.conn.commit()
           except Exception as e: 
             print(f"Error adding taks: {e}")
-            self.conn.rollback()
+            self.conn.rollback()  #goes back to the previous version
           finally:
             cursor.close()
+
+            #in the add method, the add logic simply adds the parameters as values for the table attribute
+            #all of the logic is encapsulated inside a try and catch block. 
 
       #UI Method call (Add_task)
 
@@ -114,7 +117,7 @@ class App:
              
              if rows:  #if rows are not empty
                 num_columns = 3 #three display coloumns
-                for i in range(0, len(rows), num_columns):
+                for i in range(0, len(rows), num_columns):  
                    for task in rows[i:i + num_columns]:
                       print(f"{task[0]:<5} {task[1]:<30} {task[2]}")
                    print() #separating coloumns with an empty line
@@ -127,7 +130,50 @@ class App:
          finally:
             cursor.close()
 
+      
+      #Search method
 
+     def Search_records(self, task):
+        
+        try:
+           
+           cursor = self.conn.cursor()
+           query = "Select * from Tasks where task Like ?"
+           cursor.execute(query,('%'+ task + '%',))
+           rows = cursor.fetchall()
+
+           if rows:
+                num_columns = 3
+                for i in range(0, len(rows), num_columns):
+                    for task in rows[i:i + num_columns]:
+                        print(f"{task[0]:<5} {task[1]:<30} {task[2]}")
+                    print()
+           else:
+                print("No matching tasks found.")
+
+        except Exception as e: 
+           
+           print(f"Error: {e}")
+
+        finally:
+           
+           cursor.close()
+           
+     
+    #Search UI
+
+     def SearchUI(self):
+        
+        print("***Searching Tasks****")
+        print("----------------------")
+
+        while True: 
+          user_input = input("Enter task to find: ")
+          print(user_input)
+
+          self.Search_records(user_input)
+          return
+           
 
          
         
@@ -155,6 +201,7 @@ class App:
         
          print("1. Add Tasks")
          print("2. Delete Tasks")
+         print("3. Search Tasks")
          print("3. Print all tasks")
 
          choice = int(input("Which would you like to do? : "))
@@ -166,6 +213,9 @@ class App:
             app_instance.DeleteUI()
            
          elif choice == 3:
+            app_instance.SearchUI() #replace with search method
+
+         elif choice == 4:
             app_instance.Print_records(['todo', 'doing', 'done'])
             
          elif choice == 4:
