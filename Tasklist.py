@@ -202,7 +202,7 @@ class App:
          print("1. Add Tasks")
          print("2. Delete Tasks")
          print("3. Search Tasks")
-         print("3. Print all tasks")
+         print("4. Print all tasks")
 
          choice = int(input("Which would you like to do? : "))
         
